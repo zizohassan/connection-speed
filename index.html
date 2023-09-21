@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Internet Speed Test</title>
+    <div id="result">
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<script>
+    // Download Test
+    function downloadTest() {
+        const start = performance.now();
+        $.get("http://localhost:8080/download", function () {
+            const end = performance.now();
+            const duration = (end - start) / 1000;
+            $('#result').append("<p> download test :  " + duration + " </p>")
+            console.log(`Download test complete, took ${duration} seconds`);
+        });
+    }
+
+    // Upload Test
+    function uploadTest() {
+        const data = new Array(1024 * 1024).join("a"); // 1 MB of data
+        const start = performance.now();
+        $.ajax({
+            url: "http://localhost:8080/upload",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: "text/plain",
+            success: function () {
+                const end = performance.now();
+                const duration = (end - start) / 1000;
+                $('#result').append("<p> upload test :  " + duration + " </p>")
+                console.log(`Upload test complete, took ${duration} seconds`);
+            }
+        });
+    }
+
+    // Ping Test
+    function pingTest() {
+        const start = performance.now();
+        $.ajax({
+            url: "http://localhost:8080/ping",
+            type: "POST",
+            data: "Ping",
+            processData: false,
+            contentType: "text/plain",
+            success: function () {
+                const end = performance.now();
+                const duration = (end - start) / 1000;
+                $('#result').append("<p> ping test : " + duration + " </p>")
+                console.log(`Ping test complete, latency is ${duration} seconds`);
+            }
+        });
+    }
+
+    // Run tests
+    downloadTest();
+    uploadTest();
+    pingTest();
+</script>
+
+</body>
+</html>
